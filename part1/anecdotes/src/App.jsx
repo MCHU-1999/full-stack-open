@@ -5,7 +5,6 @@ function getRandomInt(max) {
 }
 
 
-
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -17,8 +16,10 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-  
+  const zeros = Array(anecdotes.length).fill(0)
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(zeros)
+
   const handleNext = () => {
     let index = selected
     while (index == selected) {
@@ -27,14 +28,22 @@ const App = () => {
     setSelected(index)
   }
 
+  const handleVote = () => {
+    let copy = [...points]
+    copy[selected] += 1
+    setPoints(copy)
+    // console.log(copy)
+    // console.log(points[selected])
+  }
+
   return (
-    <>
-      <div>
-        {anecdotes[selected]}
-      </div>
+    <div>
+      <p style={{ fontSize: 14 }}>{anecdotes[selected]}</p>
+      <p style={{ fontSize: 12, color: "Crimson" }}>has {points[selected]} votes</p>
+      <button onClick={() => handleVote()}>vote for this one</button>
       <button onClick={() => handleNext()}>next random anecdote</button>
-    </>
-  )
+    </div>
+)
 }
 
 export default App
