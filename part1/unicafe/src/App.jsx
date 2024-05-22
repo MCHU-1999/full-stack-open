@@ -4,7 +4,7 @@ const BetterButton = ({ text, onClick }) => {
   return (
     <button
       onClick={onClick}
-      style={{ padding: "4px 12px", margin: "0px 8px", backgroundColor: "Beige" }}
+      style={{ padding: "2px 8px", margin: "0px 4px" }}
     >
       {text}
     </button>
@@ -25,6 +25,8 @@ const ButtonGroup = ({ param }) => {
   return group
 }
 
+const StatisticLine = ({ text, value }) => (<p>{text} {value}</p>)
+
 const Stat = ({ param }) => {
   let all=0, avg=0, pos=0
   param.forEach(element => all += element.count)
@@ -33,11 +35,11 @@ const Stat = ({ param }) => {
   }
   avg = all==0 ? 0 : (param[0].count - param[2].count) / all
   pos = all==0 ? 0 : param[0].count / all * 100
-  let counts = param.map(element => (<p key={element.text}>{element.text} {element.count}</p>))
+  let counts = param.map(element => (<StatisticLine key={element.text} text={element.text} value={element.count}/>))
   let stats = counts = counts.concat([
-    <p key="all">all {all}</p>,
-    <p key="avg">average {avg}</p>,
-    <p key="pos">positive {pos}%</p>
+    <StatisticLine key="all" text="all" value={all}/>,
+    <StatisticLine key="avg" text="average" value={avg}/>,
+    <StatisticLine key="pos" text="positive" value={pos+'%'}/>,
   ])
   // console.log(stats) 
   return stats
