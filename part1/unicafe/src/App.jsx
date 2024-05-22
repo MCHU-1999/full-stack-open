@@ -21,13 +21,23 @@ const ButtonGroup = ({ param }) => {
       />
     )
   });
-  console.log(group)
+  // console.log(group)
   return group
 }
 
-const Scoreboard = ({ param }) => {
-  let board = param.map(element => (<p key={element.text}>{element.text} {element.count}</p>))
-  return board
+const Stat = ({ param }) => {
+  let counts = param.map(element => (<p key={element.text}>{element.text} {element.count}</p>))
+  let all=0, avg=0, pos=0
+  param.forEach(element => all += element.count)
+  avg = all==0? 0 : (param[0].count - param[2].count) / all
+  pos = all==0? 0 : param[0].count / all * 100
+  let stats = counts = counts.concat([
+    <p key="all">all {all}</p>,
+    <p key="avg">average {avg}</p>,
+    <p key="pos">positive {pos}%</p>
+  ])
+  // console.log(stats)
+  return stats
 }
 
 const App = () => {
@@ -47,7 +57,7 @@ const App = () => {
       <h2>Give Feedback</h2>
       <ButtonGroup param={param}></ButtonGroup>
       <h2>Statistics</h2>
-      <Scoreboard param={param} />
+      <Stat param={param} />
     </div>
   )
 }
