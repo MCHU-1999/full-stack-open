@@ -26,11 +26,14 @@ const ButtonGroup = ({ param }) => {
 }
 
 const Stat = ({ param }) => {
-  let counts = param.map(element => (<p key={element.text}>{element.text} {element.count}</p>))
   let all=0, avg=0, pos=0
   param.forEach(element => all += element.count)
-  avg = all==0? 0 : (param[0].count - param[2].count) / all
-  pos = all==0? 0 : param[0].count / all * 100
+  if (all == 0) {
+    return <p>{"No feedback given yet:)"}</p>
+  }
+  avg = all==0 ? 0 : (param[0].count - param[2].count) / all
+  pos = all==0 ? 0 : param[0].count / all * 100
+  let counts = param.map(element => (<p key={element.text}>{element.text} {element.count}</p>))
   let stats = counts = counts.concat([
     <p key="all">all {all}</p>,
     <p key="avg">average {avg}</p>,
