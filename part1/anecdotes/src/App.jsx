@@ -10,7 +10,12 @@ const MostVotes = ({ anecdoteArray, pointArray }) => {
   //   return <p style={{ fontSize: 14, color: "Crimson" }}>No one voted!</p>
   // }
   let index = pointArray.indexOf(maxValue);
-  return <p style={{ fontSize: 14 }}>{anecdoteArray[index]}</p>
+  return (
+    <>
+      <p style={{ fontSize: 14 }}>{anecdoteArray[index]}</p>
+      <p style={{ fontSize: 14 }}>has {maxValue} votes</p>
+    </>
+  )
 }
 
 const App = () => {
