@@ -4,6 +4,14 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * (max));
 }
 
+const MostVotes = ({ anecdoteArray, pointArray }) => {
+  let maxValue = Math.max(...pointArray)
+  // if (maxValue <= 0) {
+  //   return <p style={{ fontSize: 14, color: "Crimson" }}>No one voted!</p>
+  // }
+  let index = pointArray.indexOf(maxValue);
+  return <p style={{ fontSize: 14 }}>{anecdoteArray[index]}</p>
+}
 
 const App = () => {
   const anecdotes = [
@@ -38,12 +46,15 @@ const App = () => {
 
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       <p style={{ fontSize: 14 }}>{anecdotes[selected]}</p>
-      <p style={{ fontSize: 12, color: "Crimson" }}>has {points[selected]} votes</p>
+      <p style={{ fontSize: 14, color: "Crimson" }}>has {points[selected]} votes</p>
       <button onClick={() => handleVote()}>vote for this one</button>
       <button onClick={() => handleNext()}>next random anecdote</button>
+      <h2>Anecdote with most votes</h2>
+      <MostVotes anecdoteArray={anecdotes} pointArray={points}/>
     </div>
-)
+  )
 }
 
 export default App
