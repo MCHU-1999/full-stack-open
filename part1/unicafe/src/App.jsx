@@ -25,7 +25,12 @@ const ButtonGroup = ({ param }) => {
   return group
 }
 
-const StatisticLine = ({ text, value }) => (<p>{text} {value}</p>)
+const StatisticLine = ({ text, value }) => (
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
+)
 
 const Stat = ({ param }) => {
   let all=0, avg=0, pos=0
@@ -36,11 +41,16 @@ const Stat = ({ param }) => {
   avg = all==0 ? 0 : (param[0].count - param[2].count) / all
   pos = all==0 ? 0 : param[0].count / all * 100
   let counts = param.map(element => (<StatisticLine key={element.text} text={element.text} value={element.count}/>))
-  let stats = counts = counts.concat([
-    <StatisticLine key="all" text="all" value={all}/>,
-    <StatisticLine key="avg" text="average" value={avg}/>,
-    <StatisticLine key="pos" text="positive" value={pos+'%'}/>,
-  ])
+  let stats = (
+    <table>
+      <tbody>
+        {...counts}
+        <StatisticLine key="all" text="all" value={all}/>
+        <StatisticLine key="avg" text="average" value={avg}/>
+        <StatisticLine key="pos" text="positive" value={pos+'%'}/>
+      </tbody>
+    </table>
+  )
   // console.log(stats) 
   return stats
 }
