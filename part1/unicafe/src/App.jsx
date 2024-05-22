@@ -36,7 +36,7 @@ const Stat = ({ param }) => {
     <p key="avg">average {avg}</p>,
     <p key="pos">positive {pos}%</p>
   ])
-  // console.log(stats)
+  // console.log(stats) 
   return stats
 }
 
