@@ -24,6 +24,8 @@ const App = () => {
     console.log('button clicked', event.target)
     if (newName.length === 0) {
       window.alert("The 'name' cannot be empty!")
+    } else if (persons.findIndex(element => newName === element.name) >= 0) {
+      window.alert(`${newName} is already added to phonebook`)
     } else {
       setPersons(persons.concat({ name: newName }))
       setNewName('')
