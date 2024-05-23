@@ -66,7 +66,7 @@ const App = () => {
         <div>
           filter shown with: <input value={query} onChange={handleSearch} />
         </div>
-      <h2>Add a new</h2>
+      <h3>Add a new</h3>
       <form onSubmit={addNumber}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
@@ -77,7 +77,7 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
+      <h3>Numbers</h3>
       <ul>
         { search(persons, query).map(element => <li key={element.name}>{ element.name } { element.number }</li>) }
       </ul>
