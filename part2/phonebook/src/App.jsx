@@ -1,8 +1,7 @@
 import { useState } from 'react'
-
-// const Numbers = ({ numbers }) => {
-//   return 
-// }
+import Filter from "./components/Filter"
+import PersonForm from "./components/PersonForm"
+import Persons from "./components/Persons"
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -35,14 +34,6 @@ const App = () => {
 
   const handleSearch = (event) => setQuery(event.target.value)
 
-  const search = (list, query) => {
-    if (query === '') {
-      return list
-    } else {
-      return list.filter(element => element.name.toLowerCase().indexOf(query.toLowerCase()) > -1)
-    }
-  } 
-
   const addNumber = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target)
@@ -63,24 +54,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <div>
-          filter shown with: <input value={query} onChange={handleSearch} />
-        </div>
+        <Filter value={query} onChange={handleSearch}/>
       <h3>Add a new</h3>
-      <form onSubmit={addNumber}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-          <br></br>
-          number: <input value={newNum} onChange={handleNumChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+        <PersonForm onSubmit={addNumber} nameValue={newName} numValue={newNum}
+          onNameChange={handleNameChange} onNumChange={handleNumChange}
+        />
       <h3>Numbers</h3>
-      <ul>
-        { search(persons, query).map(element => <li key={element.name}>{ element.name } { element.number }</li>) }
-      </ul>
+        <Persons list={persons} query={query}/>
     </div>
   )
 }
