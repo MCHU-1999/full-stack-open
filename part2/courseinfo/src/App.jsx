@@ -1,4 +1,3 @@
-
 const Header = ({ text }) => {
   return <h2>{text}</h2>
 }
@@ -12,12 +11,8 @@ const Part = ({ part }) => {
 }
 
 const Total = ({ course }) => {
-  let sum = course.parts.reduce((accumulator, element) => {
-    return accumulator + element.exercises
-  }, 0)
-  return (
-    <p style={{ fontWeight: "bold" }}>total of {sum} exercises</p>
-  )
+  let sum = course.parts.reduce((accumulator, element) => accumulator + element.exercises, 0)
+  return <p style={{ fontWeight: "bold" }}>total of {sum} exercises</p>
 }
 
 const Course = ({ course }) => {
