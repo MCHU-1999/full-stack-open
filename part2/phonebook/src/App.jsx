@@ -14,13 +14,13 @@ const App = () => {
   useEffect(() => {
     axios.get('http://localhost:3001/persons')
       .then(res => {
-        console.log('promise fulfilled');
+        console.log('promise fulfilled')
         setPersons(res.data)
       })
   },[])
 
   const handleNameChange = (event) => {
-    if (event.target.value.length >= 100) {
+    if (event.target.value.length > 100) {
       window.alert("Name shouldn't exceed 100 characters")
     } else {
       // console.log(event.target.value)
@@ -29,7 +29,7 @@ const App = () => {
   }
 
   const handleNumChange = (event) => {
-    if (event.target.value.length >= 100) {
+    if (event.target.value.length > 100) {
       window.alert("Phone number shouldn't exceed 100 characters")
     } else {
       // console.log(event.target.value)
