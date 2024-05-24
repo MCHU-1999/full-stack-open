@@ -88,11 +88,11 @@ const App = () => {
       personsDB.remove(id)
       .then(response => {
         setPersons(persons.filter(element => element.id !== id))
-        console.log('removed: ', response)
+        popToast(`Information of ${person.name} removed successfully`, 'success')
+        // console.log('removed: ', response)
       })
       .catch(error => {
-        // console.log(error)
-        popToast(`the person '${person.name}' was already deleted from server`, 'error')
+        popToast(`Information of '${person.name}' has already been removed from server`, 'error')
         setPersons(persons.filter(element => element.id !== id))
       })
     }
