@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import dbService from './services/persons'
 
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
@@ -12,10 +12,10 @@ const App = () => {
   const [query, setQuery] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(res => {
+    dbService.getAll()
+      .then(response => {
         console.log('promise fulfilled')
-        setPersons(res.data)
+        setPersons(response)
       })
   },[])
 
@@ -51,10 +51,11 @@ const App = () => {
     } else {
       setNewName('')
       setNewNum('')
-      axios.post('http://localhost:3001/persons', { name: newName, number: newNum, id: persons.length+1 })
+      dbService.create({ name: newName, number: newNum, id: undefined })
+      // axios.post('http://localhost:3001/persons', { name: newName, number: newNum, id: persons.length+1 })
       .then(response => {
-        console.log(response.data)
-        setPersons(persons.concat(response.data))
+        console.log(response)
+        setPersons(persons.concat(response))
       })
     }
   }
