@@ -42,21 +42,31 @@ const App = () => {
   const addNumber = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target)
+    const duplicatedIndex = persons.findIndex(element => newName === element.name)
+
     if (newName.length === 0) {
       window.alert("Name cannot be empty!")
     } else if (newNum.length === 0) {
       window.alert("Number cannot be empty!")
-    } else if (persons.findIndex(element => newName === element.name) >= 0) {
-      window.alert(`${newName} is already added to phonebook`)
+    } else if (duplicatedIndex >= 0) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        personsDB.update(persons[duplicatedIndex].id, { name: newName, number: newNum })
+        .then(response => {
+          console.log('updated: ', response)
+          let copy = [...persons]
+          copy.splice(duplicatedIndex, 1, response)
+          setPersons(copy)
+        })
+      }
     } else {
-      setNewName('')
-      setNewNum('')
       personsDB.create({ name: newName, number: newNum, id: undefined })
       .then(response => {
         console.log('created: ', response)
         setPersons(persons.concat(response))
       })
     }
+    setNewName('')
+    setNewNum('')
   }
 
   const removePerson = (id) => {
