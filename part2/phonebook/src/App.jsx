@@ -1,15 +1,20 @@
+import './index.css'
+
 import { useState, useEffect } from 'react'
 import personsDB from './services/persons'
 
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
+import Notification from "./components/Notification"
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [query, setQuery] = useState('')
+  const [noti, setNoti] = useState({ message: null, type: null })
 
   useEffect(() => {
     personsDB.getAll()
@@ -19,9 +24,17 @@ const App = () => {
       })
   },[])
 
+  const popToast = (message, type) => {
+    setNoti({ message, type })
+    setTimeout(() => {
+      setNoti({ message: null, type: null })
+    }, 5000)
+    return null
+  }
+
   const handleNameChange = (event) => {
     if (event.target.value.length > 100) {
-      window.alert("Name shouldn't exceed 100 characters")
+      popToast("Name shouldn't exceed 100 characters", 'error')
     } else {
       // console.log(event.target.value)
       setNewName(event.target.value)
@@ -30,7 +43,7 @@ const App = () => {
 
   const handleNumChange = (event) => {
     if (event.target.value.length > 100) {
-      window.alert("Phone number shouldn't exceed 100 characters")
+      popToast("Phone number shouldn't exceed 100 characters", 'error')
     } else {
       // console.log(event.target.value)
       setNewNum(event.target.value)
@@ -45,14 +58,14 @@ const App = () => {
     const duplicatedIndex = persons.findIndex(element => newName === element.name)
 
     if (newName.length === 0) {
-      window.alert("Name cannot be empty!")
+      popToast('Name cannot be empty', 'error')
     } else if (newNum.length === 0) {
-      window.alert("Number cannot be empty!")
+      popToast('Number cannot be empty', 'error')
     } else if (duplicatedIndex >= 0) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         personsDB.update(persons[duplicatedIndex].id, { name: newName, number: newNum })
         .then(response => {
-          console.log('updated: ', response)
+          popToast(`updated ${newName}` , 'success')
           let copy = [...persons]
           copy.splice(duplicatedIndex, 1, response)
           setPersons(copy)
@@ -61,7 +74,7 @@ const App = () => {
     } else {
       personsDB.create({ name: newName, number: newNum, id: undefined })
       .then(response => {
-        console.log('created: ', response)
+        popToast(`created ${newName}` , 'success')
         setPersons(persons.concat(response))
       })
     }
@@ -74,13 +87,12 @@ const App = () => {
     if (window.confirm(`Do you really want to remove ${person.name}?`)) {
       personsDB.remove(id)
       .then(response => {
-        // personsDB.getAll()
         setPersons(persons.filter(element => element.id !== id))
         console.log('removed: ', response)
       })
       .catch(error => {
-        console.log(error)
-        alert(`the person '${person.name}' was already deleted from server`)
+        // console.log(error)
+        popToast(`the person '${person.name}' was already deleted from server`, 'error')
         setPersons(persons.filter(element => element.id !== id))
       })
     }
@@ -89,13 +101,14 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <Filter value={query} onChange={handleSearch}/>
+      <Notification message={noti.message} type={noti.type}/>
+      <Filter value={query} onChange={handleSearch}/>
       <h3>Add a new</h3>
-        <PersonForm onSubmit={addNumber} nameValue={newName} numValue={newNum}
-          onNameChange={handleNameChange} onNumChange={handleNumChange}
-        />
+      <PersonForm onSubmit={addNumber} nameValue={newName} numValue={newNum}
+        onNameChange={handleNameChange} onNumChange={handleNumChange}
+      />
       <h3>Numbers</h3>
-        <Persons list={persons} query={query} onRemove={removePerson}/>
+      <Persons list={persons} query={query} onRemove={removePerson}/>
     </div>
   )
 }
