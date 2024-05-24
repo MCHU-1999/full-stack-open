@@ -21,29 +21,9 @@
       "id": "4"
     },
     {
-      "id": "5",
-      "name": "test",
-      "number": "123"
-    },
-    {
-      "id": "6",
-      "name": "testtest2",
-      "number": "112"
-    },
-    {
       "id": "7",
       "name": "Ming-Chieh Hu",
       "number": "0917013660"
-    },
-    {
-      "id": "8",
-      "name": "Services persons.js",
-      "number": "012-023-034"
-    },
-    {
-      "id": "482b",
-      "name": "Undefined ID",
-      "number": "0000000000"
     }
   ]
 }

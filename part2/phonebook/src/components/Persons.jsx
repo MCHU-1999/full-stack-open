@@ -1,4 +1,4 @@
-const Persons = ({ list, query }) => {
+const Persons = ({ list, query, onRemove }) => {
   // search function
   const search = (list, query) => {
     if (query === '') {
@@ -10,7 +10,12 @@ const Persons = ({ list, query }) => {
 
   return (
     <ul>
-      { search(list, query).map(element => <li key={element.name}>{ element.name } { element.number }</li>) }
+      { search(list, query).map(element => 
+          <li key={element.id}>
+            { element.name } { element.number } <button onClick={() => onRemove(element.id) } >remove</button>
+          </li>
+        )
+      }
     </ul>
   )
 }

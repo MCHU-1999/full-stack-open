@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import dbService from './services/persons'
+import personsDB from './services/persons'
 
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
@@ -12,7 +12,7 @@ const App = () => {
   const [query, setQuery] = useState('')
 
   useEffect(() => {
-    dbService.getAll()
+    personsDB.getAll()
       .then(response => {
         console.log('promise fulfilled')
         setPersons(response)
@@ -51,15 +51,30 @@ const App = () => {
     } else {
       setNewName('')
       setNewNum('')
-      dbService.create({ name: newName, number: newNum, id: undefined })
-      // axios.post('http://localhost:3001/persons', { name: newName, number: newNum, id: persons.length+1 })
+      personsDB.create({ name: newName, number: newNum, id: undefined })
       .then(response => {
-        console.log(response)
+        console.log('created: ', response)
         setPersons(persons.concat(response))
       })
     }
   }
 
+  const removePerson = (id) => {
+    const person = persons.find(n => n.id === id)
+    if (window.confirm(`Do you really want to remove ${person.name}?`)) {
+      personsDB.remove(id)
+      .then(response => {
+        // personsDB.getAll()
+        setPersons(persons.filter(element => element.id !== id))
+        console.log('removed: ', response)
+      })
+      .catch(error => {
+        console.log(error)
+        alert(`the person '${person.name}' was already deleted from server`)
+        setPersons(persons.filter(element => element.id !== id))
+      })
+    }
+  }
 
   return (
     <div>
@@ -70,7 +85,7 @@ const App = () => {
           onNameChange={handleNameChange} onNumChange={handleNumChange}
         />
       <h3>Numbers</h3>
-        <Persons list={persons} query={query}/>
+        <Persons list={persons} query={query} onRemove={removePerson}/>
     </div>
   )
 }
