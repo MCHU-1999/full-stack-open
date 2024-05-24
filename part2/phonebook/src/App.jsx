@@ -49,9 +49,13 @@ const App = () => {
     } else if (persons.findIndex(element => newName === element.name) >= 0) {
       window.alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat({ name: newName, number: newNum, id: persons.length+1 }))
       setNewName('')
       setNewNum('')
+      axios.post('http://localhost:3001/persons', { name: newName, number: newNum, id: persons.length+1 })
+      .then(response => {
+        console.log(response.data)
+        setPersons(persons.concat(response.data))
+      })
     }
   }
 
