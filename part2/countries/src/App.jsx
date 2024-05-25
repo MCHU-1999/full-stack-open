@@ -6,31 +6,63 @@ import countries from './services/countries'
 
 const tooMany = "Too many matches, specify another filter."
 
-const MultiResult = ({ list }) => {
+const MultiResult = ({ list, data }) => {
+  const [showDetail, setShowDetail] = useState(Array(list.length).fill(false))
+  
+  useEffect(() => {
+    setShowDetail(Array(list.length).fill(false))
+  }, [list])
+
+  const toggleShow = (index) => {
+    console.log("toggle! index: ", index);
+    setShowDetail(showDetail.map((element, i) => i === index ? !element : element ))
+  }
+  
   if (list.length > 10) {
     return <p>{tooMany}</p>
   } else {
+    // console.log("list: ", list)
+    // console.log("showDetail: ", showDetail)
     return (
-      <ul>{ list.map(element => <li key={element}>{element}</li>) }</ul>
+      <ul>
+        {
+          list.map((element, i) => {
+            if (showDetail[i]) {
+              return (
+                <li key={element}>
+                  {element} <button onClick={() => toggleShow(i)}>fold</button>
+                  <OneResult name={element} data={data} />
+                </li>
+              )
+            } else {
+              return (
+                <li key={element}>
+                  {element} <button onClick={() => toggleShow(i)}>show</button>
+                </li>
+              )
+            }
+          })
+        }
+      </ul>
     )
   }
 }
 
-const OneResult = ({ name }) => {
+const OneResult = ({ name, data }) => {
   const [result, setResult] = useState(null)
-  // console.log(list)
+  // console.log(data)
 
   useEffect(() => {
-    console.log("useEffect fires")
-    countries.getCountry(name)
-    .then(res => {
-      // console.log('res', res)
-      setResult(res)
-    })
+    console.log("useEffect fires in <OneResult>")
+    setResult(data[name])
+    // countries.getCountry(name)
+    // .then(res => {
+    //   setResult(res)
+    // })
   }, [])
 
-  console.log("result: ", result);
-  if (result !== null) {
+  // console.log("one country: ", result);
+  if (result !== null && result !== undefined) {
     return (
       <>
         <h1>{result.name.common}</h1>
@@ -50,12 +82,10 @@ const OneResult = ({ name }) => {
 function App() {
   const [queryString, setQueryString] = useState('')
   const [countriesList, setCountriesList] = useState([])
-  const [countriesToShow, setCountriesToShow] = useState([])
-  // const [queryString, setQueryString] = useState('')
-
+  const [countriesData, setCountriesData] = useState([])
 
   const handleInput = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setQueryString(event.target.value)
   }
 
@@ -64,7 +94,6 @@ function App() {
       return []
     }
     let filtered = countriesList.filter(element => element.toLowerCase().indexOf(queryString.toLowerCase()) > -1)
-    // console.log(filtered)
     return filtered
   }
   
@@ -73,8 +102,10 @@ function App() {
     if (countriesList.length === 0) {
       countries.getAllCountries()
       .then(response => {
-        // console.log(response.map(element => element.name.common))
-        setCountriesList(response.map(element => element.name.common))
+        const names = response.map(element => element.name.common)
+        // console.log("names: ", names);
+        setCountriesList(names)
+        setCountriesData(Object.fromEntries(names.map((_, i) => [names[i], response[i]])))
         console.log('countries loaded');
       })
     }
@@ -85,9 +116,9 @@ function App() {
       find countries <input onChange={handleInput}></input>
       {/* <p>{query(queryString)}</p> */}
       { query(queryString).length === 1 ?
-        <OneResult name={query(queryString)[0]}/>
+        <OneResult name={query(queryString)[0]} data={countriesData}/>
         :
-        <MultiResult list={query(queryString)}/>
+        <MultiResult list={query(queryString)} data={countriesData}/>
       }
       
       
