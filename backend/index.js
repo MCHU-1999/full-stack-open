@@ -1,8 +1,6 @@
 const express = require('express')
 const app = express()
 
-app.use(express.json())
-
 let notes = [
   {
     id: 1,
@@ -21,26 +19,27 @@ let notes = [
   }
 ]
 
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+app.use(express.json())
+app.use(requestLogger)
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/notes', (request, response) => {
-  if (notes) {
-    response.json(notes)
-  } else {
-    response.status(404).end()
-  }
-})
-
-app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const note = notes.find(note => note.id === id)
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  }
+  response.json(notes)
 })
 
 const generateId = () => {
@@ -61,13 +60,24 @@ app.post('/api/notes', (request, response) => {
 
   const note = {
     content: body.content,
-    important: Boolean(body.important) || false,
+    important: body.important || false,
     id: generateId(),
   }
 
   notes = notes.concat(note)
 
   response.json(note)
+})
+
+app.get('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const note = notes.find(note => note.id === id)
+  if (note) {
+    response.json(note)
+  } else {
+    console.log('x')
+    response.status(404).end()
+  }
 })
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -77,7 +87,9 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = 3001
+app.use(unknownEndpoint)
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
