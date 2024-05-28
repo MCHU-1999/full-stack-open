@@ -22,6 +22,9 @@ const App = () => {
         console.log('promise fulfilled')
         setPersons(response)
       })
+      .catch(error => {
+        console.log(error.response.data.message)
+      })
   },[])
 
   const popToast = (message, type) => {
@@ -54,14 +57,10 @@ const App = () => {
 
   const addNumber = (event) => {
     event.preventDefault()
-    console.log('button clicked', event.target)
+    // console.log('button clicked', event.target)
     const duplicatedIndex = persons.findIndex(element => newName === element.name)
 
-    if (newName.length === 0) {
-      popToast('Name cannot be empty', 'error')
-    } else if (newNum.length === 0) {
-      popToast('Number cannot be empty', 'error')
-    } else if (duplicatedIndex >= 0) {
+    if (duplicatedIndex >= 0) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         personsDB.update(persons[duplicatedIndex].id, { name: newName, number: newNum })
         .then(response => {
@@ -70,12 +69,20 @@ const App = () => {
           copy.splice(duplicatedIndex, 1, response)
           setPersons(copy)
         })
+        .catch(error => {
+          // console.log(error.response.data.message)
+          popToast(error.response.data.message , 'error')
+        })
       }
     } else {
-      personsDB.create({ name: newName, number: newNum, id: undefined })
+      personsDB.create({ name: newName, number: newNum })
       .then(response => {
         popToast(`created ${newName}` , 'success')
         setPersons(persons.concat(response))
+      })
+      .catch(error => {
+        // console.log(error.response.data.message)
+        popToast(error.response.data.message , 'error')
       })
     }
     setNewName('')
