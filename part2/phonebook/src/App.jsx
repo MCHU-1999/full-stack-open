@@ -73,6 +73,8 @@ const App = () => {
           // console.log(error.response.data.message)
           popToast(error.response.data.message , 'error')
         })
+        setNewName('')
+        setNewNum('')
       }
     } else {
       personsDB.create({ name: newName, number: newNum })
@@ -84,9 +86,10 @@ const App = () => {
         // console.log(error.response.data.message)
         popToast(error.response.data.message , 'error')
       })
+      setNewName('')
+      setNewNum('')
     }
-    setNewName('')
-    setNewNum('')
+
   }
 
   const removePerson = (id) => {
